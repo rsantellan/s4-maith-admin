@@ -1,0 +1,125 @@
+maith_admin_homepage:
+    path:  /admin
+    defaults: { _controller: MaithCommonAdminBundle:Default:index }
+
+#maith_admin_media_show:
+#    path:  /admin/media/{id}/{objectclass}
+#    defaults: { _controller: MaithCommonAdminBundle:Albums:retrieveAlbums }
+
+#
+
+maith_admin_jquery_datatable_langs:
+    path:  /{_locale}/admin/datatablelang.html
+    defaults: { _controller: MaithCommonAdminBundle:Default:retrieveDataTableTexts }
+
+maith_admin_media_download_file:
+    path:  /admin/media/download-file/{id}
+    defaults: { _controller: MaithCommonAdminBundle:Albums:downloadOriginalFile }
+
+maith_admin_media_update_file_name:
+    path:  /admin/media/edit-file/{id}
+    defaults: { _controller: MaithCommonAdminBundle:Albums:editFileEdition }
+
+maith_admin_media_show_file:
+    path:  /admin/media/show-file/{id}
+    defaults: { _controller: MaithCommonAdminBundle:Albums:showFileEdition }
+
+maith_admin_media_upload:
+    path:  /admin/media/upload/{id}
+    defaults: { _controller: MaithCommonAdminBundle:Albums:uploadForm }
+
+maith_admin_media_actual_upload:
+    path:  /admin/media/do-upload
+    defaults: { _controller: MaithCommonAdminBundle:Albums:doFormUpload }
+
+maith_admin_media_refresh_album:
+    path:  /admin/media/refresh-album.html
+    defaults: { _controller: MaithCommonAdminBundle:Albums:refreshAlbum }
+
+maith_admin_media_remove:
+    path:  /admin/media/remove/{id}
+    defaults: { _controller: MaithCommonAdminBundle:Albums:removeFile }
+
+maith_admin_media_sort_album:
+    path:  /admin/media/sort/{id}
+    defaults: { _controller: MaithCommonAdminBundle:Albums:sortAlbum }
+
+maith_admin_media_sort_action:
+    path:  /admin/media/do-album-sort.html
+    defaults: { _controller: MaithCommonAdminBundle:Albums:doSortAlbum }
+
+maith_admin_media_show_galleries:
+    path:  /admin/media/galleries.html
+    defaults: { _controller: MaithCommonAdminBundle:Albums:showGalleries }
+
+maith_admin_media_gallery_upload:
+    path:  /admin/media/gallery/upload/{gallery}
+    defaults: { _controller: MaithCommonAdminBundle:Albums:uploadGalleryForm }
+
+maith_admin_media_gallery_actual_upload:
+    path:  /admin/media/gallery/do-upload
+    defaults: { _controller: MaithCommonAdminBundle:Albums:doGalleryFormUpload }
+
+maith_admin_media_gallery_remove:
+    path:  /admin/media/remove/{gallery}/{file}
+    defaults: { _controller: MaithCommonAdminBundle:Albums:removeGalleryFile }
+
+maith_admin_gallery_upload_form:
+    path:     /admin/gallery/{name}/form
+    defaults: { _controller: MaithCommonAdminBundle:Gallery:uploadForm }
+
+maith_admin_gallery_do_upload:
+    path:     /admin/gallery/upload-to-gallery
+    defaults: { _controller: MaithCommonAdminBundle:Gallery:doUpload }
+
+maith_admin_gallery_refresh:
+    path:     /admin/gallery/refresh
+    defaults: { _controller: MaithCommonAdminBundle:Gallery:refreshGallery }
+
+maith_admin_gallery_download_file:
+    path:     /admin/gallery/{gallery}/download/{file}
+    defaults: { _controller: MaithCommonAdminBundle:Gallery:downloadFile }
+
+maith_admin_gallery_remove_file:
+    path:     /admin/gallery/{gallery}/remove/{file}
+    defaults: { _controller: MaithCommonAdminBundle:Gallery:removeFile }
+
+maith_admin_media_online_video_upload:
+    path:  /admin/media/online-video/{id}
+    defaults: { _controller: MaithCommonAdminBundle:Albums:onlineVideoForm }
+
+maith_admin_parameters_config:
+    path:  /admin/parameters-configuration.html
+    defaults: { _controller: MaithCommonAdminBundle:AdminParameters:showParameters }
+
+maith_admin_wyswyg_media_browser:
+    path:  /admin/wyswyg/media/browse
+    defaults: { _controller: MaithCommonAdminBundle:MediaWyswyg:wyswygShowFiles }
+
+maith_admin_wyswyg_media_add_folder:
+    path:  /admin/wyswyg/media/folder/add
+    defaults: { _controller: MaithCommonAdminBundle:MediaWyswyg:wyswygAddFolderForm }    
+
+maith_admin_wyswyg_upload_form:
+    path:     /admin/wyswyg/{name}/form
+    defaults: { _controller: MaithCommonAdminBundle:MediaWyswyg:uploadForm }
+
+maith_admin_wyswyg_refresh:
+    path:     /admin/wyswyg/refresh
+    defaults: { _controller: MaithCommonAdminBundle:MediaWyswyg:refreshFolder }
+
+maith_admin_wyswyg_do_upload:
+    path:     /admin/wyswyg/upload-to-folder
+    defaults: { _controller: MaithCommonAdminBundle:MediaWyswyg:doUpload }    
+
+maith_admin_wyswyg_download_file:
+    path:     /admin/wyswyg/{folder}/download/{file}
+    defaults: { _controller: MaithCommonAdminBundle:MediaWyswyg:downloadFile }
+
+maith_admin_wyswyg_remove_file:
+    path:     /admin/wyswyg/{folder}/remove/{file}
+    defaults: { _controller: MaithCommonAdminBundle:MediaWyswyg:removeFile }    
+
+maith_admin_wyswyg_show_file:
+    path:  /admin/wyswyg/{folder}/show/{file}
+    defaults: { _controller: MaithCommonAdminBundle:MediaWyswyg:showFile }    

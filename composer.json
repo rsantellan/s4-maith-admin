@@ -1,0 +1,25 @@
+{
+    "name": "rsantellan/maith-admin",
+    "type": "symfony-bundle",
+    "description": "This is a basic admin interface for projects",
+    "keywords": ["admin", "bundle", "basic"],
+    "homepage": "https://github.com/rsantellan/symfony2-maith-admin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rodrigo Santellan",
+            "email": "rsantellan@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1.3"
+    },
+    "require-dev": {
+        "symfony/framework-bundle": "4.3.*"
+    },
+    "autoload": {
+        "psr-0": { "Maith\\Common\\AdminBundle": "" }
+    },
+    "minimum-stability": "dev",
+    "target-dir": "Maith/Common/AdminBundle"
+}

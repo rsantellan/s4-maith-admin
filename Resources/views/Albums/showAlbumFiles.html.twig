@@ -1,0 +1,62 @@
+{% set gridClass = 'col-md-12' %}
+{% set open = 'false' %}
+{% set counter = 0 %}
+{% for file in files%}
+  {% if loop.first %}
+  <div class="row show-grid">
+  {% set open = 'true' %} 
+  {% else %}
+      {% if counter == 0 %}
+      <div class="row show-grid">
+      {% set open = 'true' %}  
+      {% endif %}
+  {% endif %}
+  {% set counter = counter + 1 %}
+    <div class="{{gridClass}}" id="file_container_{{file.id}}">
+      <div class="img_thumb_container">
+        <div class="img_edit">
+          <a class="edit_file_link" href="{{ path('maith_admin_media_show_file', { 'id' : file.id }) }}">
+            Editar
+          </a>
+        </div>
+        {% if file.isOnlineVideo %}
+          <img alt="{{ file.showName }}" src="{{ file.thumb }}" width="150" height="150" />
+        {% else %}
+          {% if file.isImage %}
+            <img alt="{{ file.showName }}" src="{{ file.fullPath | mImage(150, 150, 'rce') }}" />
+          {% else %}
+            <label style='float: left'>
+            {% if file.showName == '' %}
+                {{ file.name }}
+            {% else %}
+                {{ file.showName }}
+            {% endif %}
+            </label>
+            <br/>
+            <img src="{{ asset('bundles/maithcommonadmin/images/' ~ file.knownFileExtension ~ '.png') }}"  width='80' height='80' />
+          {% endif %}
+        {% endif %}
+        <div class="img_delete">
+          <a onclick="imagesManager.getInstance().removeImage('{{ path('maith_admin_media_remove', {'id': file.id})}}', '{% trans %}maith_images_admin_delete_confirmation{% endtrans %}', {{ file.id }});" href="javascript:void(0)" class="">
+            <img src="{{ asset('bundles/maithcommonimage/images/delete.png') }}" />
+          </a>
+        </div>
+      </div>
+    </div>
+   {% set gridClass = 'col-md-3' %}  
+
+   {% if loop.first%}
+      </div>
+      {% set open = 'false' %}
+      {% set counter = 0 %}
+   {% else %}
+     {%  if counter is divisibleby(4) %}
+       </div>
+      {% set open = 'false' %}
+      {% set counter = 0 %}
+     {% endif %}
+  {% endif %}
+{% endfor %}
+{% if open == 'true' %}
+  </div>
+{% endif %}

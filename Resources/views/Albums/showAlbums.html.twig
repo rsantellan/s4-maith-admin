@@ -1,0 +1,23 @@
+<div class="col-lg-12">
+{% for album in albums%}
+<div id="album_{{ album.id}}" class="panel panel-default">
+  <div class="panel-heading">
+    <h3>{{ album.name }}</h3>
+    <a class="album_uploader_link btn btn-primary" href="{{ path('maith_admin_media_upload', {'id': album.id})}}">{% trans %}maith_images_admin_upload{% endtrans %}</a>
+    {% if album.hasonlinevideo %}
+    <a class="album_uploader_video_link btn btn-warning" href="{{ path('maith_admin_media_online_video_upload', {'id': album.id})}}">Agregar video</a>
+    {% endif %}
+  </div>
+  <div class="panel-body img_thumb_ul">
+    {{ include('MaithCommonAdminBundle:Albums:showAlbumFiles.html.twig', {'files': album.files}) }}
+  </div>  
+  <div class="panel-footer">
+    <a albumId="{{ album.id }}" class="album_sortable_link" href="{{ path('maith_admin_media_sort_album', {'id': album.id})}}">
+      {% trans %}maith_images_admin_sort{% endtrans %}
+    </a>
+  </div>
+  
+</div>
+{% endfor %}
+<input type="hidden" value="{{ path('maith_admin_media_refresh_album')}}" id="refreshAlbumUrl" />
+</div>

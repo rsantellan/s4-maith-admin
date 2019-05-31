@@ -1,0 +1,12 @@
+<div class="col-lg-12">
+{% for name, files in galleries %}
+    <div class="col-lg-10" id="gallery_{{name}}">
+      <h3>{{ name }}</h3>
+      <a class="album_uploader_link" href="{{ path('maith_admin_gallery_upload_form', {'name': name})}}">{% trans %}maith_images_admin_upload{% endtrans %}</a>
+      <div class='images'>
+        {{ include('MaithCommonAdminBundle:Gallery:gallery.html.twig', {'name': name, 'files': files }) }}
+      </div>
+    </div>
+{% endfor %}    
+</div>
+<input type='hidden' value='{{ path('maith_admin_gallery_refresh') }}' id='gallery_refresh_url' />
