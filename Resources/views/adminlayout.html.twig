@@ -52,29 +52,7 @@
 		  </a>
 		</div>
 
-		{#
-		<form class="navbar-form navbar-left hidden-xs" role="search">
-		  <div class="form-group">
-			<button class="btn no-border no-margin bg-none no-pd-l" type="submit">
-			  <i class="fa fa-search"></i>
-			</button>
-			<select id='globalSearchOption' class='form-control notbootstrapselect'>
-              {% if is_granted("hasRole('ROLE_VIEW_CLIENT_GROUP')") %}
-			    <option value='1'>Clientes</option>
-              {% endif %}  
-              {% if is_granted("hasRole('ROLE_ADD_EDIT_USERS')") %}
-			    <option value='2'>Usuarios</option>
-              {% endif %}
-              {% if is_granted("hasRole('ROLE_ADD_EDIT_CONTACTS')") %}
-			    <option value='3'>Contactos</option>
-              {% endif %}
-			</select>
-			<input type="text" class="form-control no-border no-padding search" placeholder="Buscar" id='globalSearchInput'>
-		  </div>
-		</form>
-		#}
-
-		{{ include('MaithCommonAdminBundle:Admin:userheader.html.twig') }}
+		{{ include('@MaithCommonAdmin/Admin/userheader.html.twig') }}
 	  </header>
 	  <!-- /top header -->
 
@@ -83,18 +61,13 @@
 		<aside class="sidebar collapsible canvas-left">
 		  <div class="scroll-menu">
 			<!-- main navigation -->
-			{{ include('MaithCommonAdminBundle:Admin:menu.html.twig') }}
+			{{ include('@MaithCommonAdmin/Admin/menu.html.twig') }}
 			<!-- /main navigation -->
 		  </div>
 
 		  <!-- footer -->
 		  <footer>
 			<div class="about-app pd-md animated pulse">
-			  {#
-			  <a href="javascript:;">
-				<img src="{{ asset('bundles/maithcommonadmin/admin/img/about.png')}}" alt="">
-			  </a>
-			  #}
 			  <span>
 				<b>info@rodrigosantellan.com</b>
 				<a href="javascript:;">
@@ -176,9 +149,12 @@
               </div>
             </div>
             {% endif %}
-				{% block body %}
+            {% block body %}
 
-				{% endblock %}
+            {% endblock %}
+            {% block fos_user_content %}
+
+            {% endblock %}
 		  </div>
 		  <!-- /content wrapper -->
 		</section>

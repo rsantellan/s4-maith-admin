@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="maith_album")
  * @ORM\Entity
- * @ORM\Entity(repositoryClass="Maith\Common\AdminBundle\Entity\mAlbumRepository")
+ * @ORM\Entity(repositoryClass="Maith\Common\AdminBundle\Repository\mAlbumRepository")
  * @author Rodrigo Santellan
  */
 class mAlbum {

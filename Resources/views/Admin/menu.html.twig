@@ -36,10 +36,10 @@
     </li>
 	{% endif %}
 
-	{{ include('MaithCommonAdminBundle:Admin:menuoptions.html.twig') }}
+	{{ include('@MaithCommonAdmin/Admin/menuoptions.html.twig') }}
     {% if is_granted('ROLE_VIEW_TRANSLATOR') %}
     <li>
-		<a href="{{ path('maith_common_translator_homepage')}}">
+		<a href="{{ path('maith_translation_index')}}">
 			<i class="fa fa-file-text-o"></i>
 			<span>{% trans %}admin_menu_textos{% endtrans %}</span>
 		</a>

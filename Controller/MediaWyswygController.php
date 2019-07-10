@@ -2,7 +2,7 @@
 
 namespace Maith\Common\AdminBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -11,23 +11,26 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
-class MediaWyswygController extends Controller
+use Maith\Common\AdminBundle\Services\StaticFilesService;
+use Maith\Common\ImageBundle\Model\ImageUrlGeneratorService;
+
+class MediaWyswygController extends AbstractController
 {
 
-	public function wyswygShowFilesAction(Request $request)
+	public function wyswygShowFilesAction(Request $request, StaticFilesService $staticFilesService)
     {
     	$ckeditor = $request->query->get('CKEditor');
     	$CKEditorFuncNum = $request->query->get('CKEditorFuncNum');
     	$lang = $request->query->get('langCode');
-        return $this->render('MaithCommonAdminBundle:Wyswyg:showFiles.html.twig', array(
-            'folders' => $this->get('media_wyswyg_manager')->getAllFilesWithData(),
+        return $this->render('@MaithCommonAdmin/Wyswyg/showFiles.html.twig', array(
+            'folders' => $staticFilesService->getAllFilesWithData(),
             'ckeditor' => $ckeditor,
             'CKEditorFuncNum' => $CKEditorFuncNum,
             'lang' => $lang,
         ));
     }
 
-    public function wyswygAddFolderFormAction(Request $request){
+    public function wyswygAddFolderFormAction(Request $request, StaticFilesService $staticFilesService){
     	 $form = $this->createFormBuilder()
 	        ->add('name', TextType::class)
 	        ->setAction($this->generateUrl('maith_admin_wyswyg_media_add_folder'))
@@ -43,9 +46,9 @@ class MediaWyswygController extends Controller
   	        // data is an array with "name", "email", and "message" keys
   	        $data = $form->getData();
   	        $reload = true;
-  	        $isvalid = $this->get('media_wyswyg_manager')->createFolder($data['name']);
+  	        $isvalid = $staticFilesService->createFolder($data['name']);
   	    } else {
-  	    	$html = $this->renderView('MaithCommonAdminBundle:Wyswyg:_addFolderForm.html.twig', array(
+  	    	$html = $this->renderView('@MaithCommonAdmin/Wyswyg/_addFolderForm.html.twig', array(
   			            'form' => $form->createView(),
   			        ));
   	    }
@@ -60,16 +63,16 @@ class MediaWyswygController extends Controller
 
 	public function uploadFormAction($name)
     {
-      return $this->render('MaithCommonAdminBundle:Wyswyg:upload.html.twig', array('folder' => $name));
+      return $this->render('@MaithCommonAdmin/Wyswyg/upload.html.twig', array('folder' => $name));
     }    
 
-    public function refreshFolderAction(Request $request){
+    public function refreshFolderAction(Request $request, StaticFilesService $staticFilesService){
       $folder = $request->get('folder');
-      $files = $this->get('media_wyswyg_manager')->getFiles($folder);
+      $files = $staticFilesService->getFiles($folder);
       $response = new JsonResponse();
       $response->setData(array(
           'status' => 'OK',
-          'options' => array('html' => $this->renderView('MaithCommonAdminBundle:Wyswyg:folder.html.twig', array('name' => $folder, 'files' => $files)))
+          'options' => array('html' => $this->renderView('@MaithCommonAdmin/Wyswyg/folder.html.twig', array('name' => $folder, 'files' => $files)))
       ));
       return $response;
     }
@@ -105,13 +108,10 @@ class MediaWyswygController extends Controller
         return array('extension' => $file_extension, 'mime' => $mime_type);
     }
     
-    public function doUploadAction(Request $request)
+    public function doUploadAction(Request $request, StaticFilesService $staticFilesService)
     {
-      $logger = $this->get('logger');
       $folder = $request->request->get('folder');
-      $logger->debug(sprintf('The folder name is: %s', $folder));
-      $targetDir = $this->get('media_wyswyg_manager')->checkFolder($folder);
-      $logger->debug("final folder is: ".$targetDir);
+      $targetDir = $staticFilesService->checkFolder($folder);
       if ($targetDir === NULL)
       {
         return new Response(json_encode(array("jsonrpc" => '2.0', 'error' => array('code' => 100, 'message' => "Failed to open temp directory."), 'folder' => $folder)));
@@ -128,7 +128,6 @@ class MediaWyswygController extends Controller
           $mimeAndName = $this->retrieveExtensionAndMiMeType($fileUploaded->getClientOriginalName());
           $name = uniqid(). '.'.$mimeAndName['extension'];
       }
-      $logger->debug(sprintf('Moving the file with name: %s to the following dir: %s', $name, $targetDir));
       $movedFile = $fileUploaded->move($targetDir, $name);
       if ($movedFile) 
       {
@@ -141,9 +140,9 @@ class MediaWyswygController extends Controller
       die;
     }
 
-    public function downloadFileAction($folder, $file)
+    public function downloadFileAction(StaticFilesService $staticFilesService, $folder, $file)
     {
-      $fileObject = $this->get('media_wyswyg_manager')->getFile($folder, $file);
+      $fileObject = $staticFilesService->getFile($folder, $file);
       $content = $fileObject-> getContents();
       $response = new Response();
       $fileMetadata = $this->retrieveExtensionAndMiMeType($fileObject->getFilename());
@@ -153,9 +152,9 @@ class MediaWyswygController extends Controller
       return $response;
     }
 
-    public function removeFileAction($folder, $file)
+    public function removeFileAction(StaticFilesService $staticFilesService, $folder, $file)
     {
-      $result = $this->get('media_wyswyg_manager')->removeFile($folder, $file);
+      $result = $staticFilesService->removeFile($folder, $file);
       $response = new JsonResponse();
       $response->setData(array(
           'result' => $result          
@@ -163,9 +162,9 @@ class MediaWyswygController extends Controller
       return $response;
     }
 
-    public function showFileAction(Request $request, $folder, $file)
+    public function showFileAction(Request $request, StaticFilesService $staticFilesService, ImageUrlGeneratorService $imageUrlGeneratorService, $folder, $file)
     {
-      $fileObject =  $this->get('media_wyswyg_manager')->getFile($folder, $file);
+      $fileObject =  $staticFilesService->getFile($folder, $file);
       $choices = [
         'Miniatura basico' => 't', 
         'Miniatura tomando el lado mas grande' => 'ot',
@@ -177,7 +176,7 @@ class MediaWyswygController extends Controller
       $form = $this->createFormBuilder()
         ->add('width', IntegerType::class, array('required' => true))
         ->add('heigth', IntegerType::class, array('required' => true))
-        ->add('tipo', ChoiceType::class, array('choices' => $choices, 'choices_as_values' => true, 'required' => false))
+        ->add('tipo', ChoiceType::class, array('choices' => $choices, 'required' => false))
         ->setAction($this->generateUrl('maith_admin_wyswyg_show_file', ['folder' => $folder, 'file' => $file]))
         ->setMethod('POST')
         ->getForm();
@@ -192,11 +191,9 @@ class MediaWyswygController extends Controller
           // data is an array with "name", "email", and "message" keys
           $data = $form->getData();
           $close = true;
-          $url = $this->get('maith_common_image.image.urlgenerator')->mImageFilter($fileObject->getPathName(), $data['width'], $data['heigth'], $data['tipo'], false, true);
-          $this->get('logger')->debug('url', [$url]);
-          //$isvalid = $this->get('media_wyswyg_manager')->createFolder($data['name']);
+          $url = $imageUrlGeneratorService->mImageFilter($fileObject->getPathName(), $data['width'], $data['heigth'], $data['tipo'], false, true);
       } else {
-        $html = $this->renderView('MaithCommonAdminBundle:Wyswyg:_useFileForm.html.twig', array(
+        $html = $this->renderView('@MaithCommonAdmin/Wyswyg/_useFileForm.html.twig', array(
                   'form' => $form->createView(),
                   'folder' => $folder,
                   'filename' => $file,

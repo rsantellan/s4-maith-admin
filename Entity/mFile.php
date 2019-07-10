@@ -264,7 +264,10 @@ class mFile {
     
     public function getFullPath()
     {
-      return $this->getPath().DIRECTORY_SEPARATOR.$this->getName();
+        if ($this->isOnlineVideo()) {
+            return $this->getThumb();
+        }
+        return $this->getPath().DIRECTORY_SEPARATOR.$this->getName();
     }
 
     /**
@@ -329,7 +332,6 @@ class mFile {
       $this->cachedata = new SimpleDiskCache(sys_get_temp_dir());
       
     }
-    
     
     public function getThumb()
     {

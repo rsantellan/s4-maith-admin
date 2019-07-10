@@ -17,7 +17,7 @@
           Configurar parametros
       </div>
         <div class="panel-body">
-            <form action="{{ path('maith_admin_parameters_config')}}" method="post" {{ form_enctype(form) }} role="form">
+            <form action="{{ path('maith_admin_parameters_config')}}" method="post" role="form">
               {% for counter in counters %}
                 <div class="form-group">
                     {{ form_errors(attribute(form,"param_"~ counter)) }}

@@ -13,19 +13,20 @@ use Symfony\Component\Yaml\Exception\ParseException;
 class MaithParametersService
 {
 
-    private $kernelRootDirectory;
+    private $projectRootDirectory;
+
     private $filePath = null;
 
-    public function __construct($kernelRootDirectory)
+    public function __construct($projectRootDirectory)
     {
-      $this->kernelRootDirectory = $kernelRootDirectory;
+      $this->projectRootDirectory = $projectRootDirectory;
     }
 
     public function generateFilePath($filePath = null)
     {
       if($filePath === null)
       {
-         $this->filePath = $this->kernelRootDirectory.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'my-parameters.yml';
+         $this->filePath = $this->projectRootDirectory.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'my-parameters.yml';
       }
       else
       {

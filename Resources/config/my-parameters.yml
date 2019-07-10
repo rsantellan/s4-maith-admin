@@ -1,0 +1,5 @@
+parameters:
+  contact-email-from: info@info.com
+  contact-email-from-name: 'Rodrigo Santellan'
+  contact-email-to: info@info.com
+  contact-email-subject: '[site] Contacto desde sitio web'
