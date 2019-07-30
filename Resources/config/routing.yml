@@ -122,4 +122,12 @@ maith_admin_wyswyg_remove_file:
 
 maith_admin_wyswyg_show_file:
     path:  /admin/wyswyg/{folder}/show/{file}
-    defaults: { _controller: MaithCommonAdminBundle:MediaWyswyg:showFile }    
+    defaults: { _controller: MaithCommonAdminBundle:MediaWyswyg:showFile }
+
+maith_admin_clear_cache:
+    path: /admin/maith/cache/clear
+    defaults: { _controller: MaithCommonAdminBundle:CacheCommand:commandCacheClear }
+
+maith_admin_clear_translation:
+    path: /admin/maith/translation/clear
+    defaults: { _controller: MaithCommonAdminBundle:CacheCommand:commandTranslationClear }
