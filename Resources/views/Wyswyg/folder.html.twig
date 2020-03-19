@@ -13,13 +13,20 @@
             <a class="edit_file_link" href="{{ path('maith_admin_wyswyg_show_file', {'folder' : name, 'file' : file.fileName}) }}" onclick="return wyswygManager.getInstance().showModal(this);">
               Usar
             </a>
-            {#
-              <a href="{{ path('maith_admin_wyswyg_download_file', {'folder' : name, 'file' : file.fileName}) }}">
-                <img src="{{ asset('bundles/maithcommonadmin/images/download_link.png') }}" />  
-              </a>
-            #}
           </div>
-          <img alt="{{ file.fileName }}" src="{{ file.pathName | mImage(150, 150, 'rce') }}" />
+          {% if file.extension|lower == 'xls' or file.extension|lower == 'xlsx' or file.extension|lower == 'ods' %}
+            <img src="{{ asset('bundles/maithcommonadmin/images/excel.png') }}"  width='150' height='150' />
+          {% elseif file.extension|lower == 'doc' or file.extension|lower == 'docx' or file.extension|lower == 'odt' %}
+            <img src="{{ asset('bundles/maithcommonadmin/images/word.png') }}"  width='150' height='150' />
+          {% elseif file.extension|lower == 'ppt' or file.extension|lower == 'pptx' or file.extension|lower == 'ott' %}
+            <img src="{{ asset('bundles/maithcommonadmin/images/powerpoint.png') }}"  width='150' height='150' />
+          {% elseif file.extension|lower == 'rtf' or file.extension|lower == 'txt' or file.extension|lower == 'pub' %}
+            <img src="{{ asset('bundles/maithcommonadmin/images/text.png') }}"  width='150' height='150' />
+          {% elseif file.extension|lower == 'pdf' %}
+            <img src="{{ asset('bundles/maithcommonadmin/images/pdf.png') }}"  width='150' height='150' />
+          {% else %}
+            <img alt="{{ file.fileName }}" src="{{ file.pathName | mImage(150, 150, 'rce') }}" />
+          {% endif %}
           <div class="img_delete">
             <a onclick="wyswygManager.getInstance().removeImage('{{ path('maith_admin_wyswyg_remove_file', {'folder' : name, 'file' : file.fileName}) }}', '{% trans %}maith_images_admin_delete_confirmation{% endtrans %}', this);" href="javascript:void(0)" class="">
               <i class="fa fa-trash fa-2x"></i>
