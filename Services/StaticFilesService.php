@@ -18,6 +18,12 @@ class StaticFilesService
   
     private $filesRoot = 'galleries';
 
+    /**
+     * StaticFilesService constructor.
+     * @param Logger $logger
+     * @param $documentRoot
+     * @param $filesRoot
+     */
 	public function __construct(Logger $logger, $documentRoot, $filesRoot)
 	{
 		$this->logger = $logger;
@@ -26,27 +32,45 @@ class StaticFilesService
 		$this->logger->addDebug('Starting Static files Service');
 	}
 
+    /**
+     * @return mixed
+     */
 	public function getDocumentRoot() {
       return $this->documentRoot;
     }
 
+    /**
+     * @param $documentRoot
+     */
     public function setDocumentRoot($documentRoot) {
       $this->documentRoot = $documentRoot;
     }
-    
+
+    /**
+     * @return string
+     */
     public function getFilesRoot() {
       return $this->filesRoot;
     }
 
+    /**
+     * @param $filesRoot
+     */
     public function setFilesRoot($filesRoot) {
       $this->filesRoot = $filesRoot;
     }
 
+    /**
+     * @return string
+     */
     public function getFilesFullPath()
     {
       return $this->getDocumentRoot().DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'web'. DIRECTORY_SEPARATOR.$this->getFilesRoot();
     }
-    
+
+    /**
+     * @return array
+     */
     public function getAllFilesWithData()
     {
       $targetDir = $this->getFilesFullPath();
@@ -71,7 +95,11 @@ class StaticFilesService
       }
       return $directories;
     }
-    
+
+    /**
+     * @param $folderName
+     * @return bool
+     */
     public function createFolder($folderName)
     {
     	$targetDir = $this->getFilesFullPath().DIRECTORY_SEPARATOR.$folderName;
@@ -84,6 +112,10 @@ class StaticFilesService
 	    return $response;
     }
 
+    /**
+     * @param $folderName
+     * @return string|null
+     */
     public function checkFolder($folderName){
     	if($this->createFolder($folderName)){
     		return $this->getFilesFullPath().DIRECTORY_SEPARATOR.$folderName;
@@ -91,6 +123,10 @@ class StaticFilesService
     	return NULL;
     }
 
+    /**
+     * @param $folder
+     * @return array
+     */
     public function getFiles($folder)
     {
       $targetDir = $this->getFilesFullPath().DIRECTORY_SEPARATOR.$folder;
@@ -108,7 +144,12 @@ class StaticFilesService
       }
       return $files;
     }
-    
+
+    /**
+     * @param $folder
+     * @param $filename
+     * @return mixed|null
+     */
     public function getFile($folder, $filename)
     {
       $targetDir = $this->getFilesFullPath().DIRECTORY_SEPARATOR.$folder;
@@ -126,6 +167,11 @@ class StaticFilesService
       return array_pop($files);
     }
 
+    /**
+     * @param $folder
+     * @param $filename
+     * @return bool|null
+     */
     public function removeFile($folder, $filename)
     {
       $targetDir = $this->getFilesFullPath().DIRECTORY_SEPARATOR.$folder;
@@ -142,6 +188,41 @@ class StaticFilesService
       }
       $spFile = array_pop($files);
       return @unlink($spFile->getPathName());
+    }
+
+    /**
+     * @param $filename
+     * @return array
+     */
+    public function retrieveExtensionAndMiMeType($filename)
+    {
+        /* Figure out the MIME type (if not specified) */
+        $known_mime_types = array(
+            "pdf" => "application/pdf",
+            "txt" => "text/plain",
+            "html" => "text/html",
+            "htm" => "text/html",
+            "exe" => "application/octet-stream",
+            "zip" => "application/zip",
+            "doc" => "application/msword",
+            "xls" => "application/vnd.ms-excel",
+            "ppt" => "application/vnd.ms-powerpoint",
+            "gif" => "image/gif",
+            "png" => "image/png",
+            "jpeg" => "image/jpg",
+            "jpg" => "image/jpg",
+            "php" => "text/plain"
+        );
+
+
+        $file_extension = strtolower(substr(strrchr($filename, "."), 1));
+        if (array_key_exists($file_extension, $known_mime_types)) {
+            $mime_type = $known_mime_types[$file_extension];
+        } else {
+            $mime_type = "application/force-download";
+        }
+
+        return array('extension' => $file_extension, 'mime' => $mime_type);
     }
 
 }

@@ -131,3 +131,7 @@ maith_admin_clear_cache:
 maith_admin_clear_translation:
     path: /admin/maith/translation/clear
     defaults: { _controller: MaithCommonAdminBundle:CacheCommand:commandTranslationClear }
+
+maith_public_wyswyg_download_file:
+    path: /public/maith/download/{url}
+    defaults: { _controller: MaithCommonAdminBundle:PublicStatic:downloadFile }

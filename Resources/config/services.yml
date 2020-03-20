@@ -90,7 +90,16 @@ services:
 
   Maith\Common\AdminBundle\Repository\mAlbumRepository:
     autowire: true # or define your controller constructor and configure its arguments explicitly
+    tags: ['doctrine.repository_service']
 
   Maith\Common\AdminBundle\Controller\CacheCommandController:
     autowire: true # or define your controller constructor and configure its arguments explicitly
     tags: ['controller.service_arguments']
+
+  Maith\Common\AdminBundle\Controller\PublicStaticController:
+    autowire: true # or define your controller constructor and configure its arguments explicitly
+    tags: ['controller.service_arguments']
+
+  Maith\Common\AdminBundle\Services\StaticFileUrlGeneratorService:
+    arguments:
+      $router: '@router'

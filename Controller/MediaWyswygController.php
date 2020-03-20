@@ -12,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use Maith\Common\AdminBundle\Services\StaticFilesService;
+use Maith\Common\AdminBundle\Services\StaticFileUrlGeneratorService;
 use Maith\Common\ImageBundle\Model\ImageUrlGeneratorService;
 
 class MediaWyswygController extends AbstractController
@@ -77,37 +78,6 @@ class MediaWyswygController extends AbstractController
       return $response;
     }
 
-    private function retrieveExtensionAndMiMeType($filename)
-    {
-        /* Figure out the MIME type (if not specified) */
-        $known_mime_types = array(
-            "pdf" => "application/pdf",
-            "txt" => "text/plain",
-            "html" => "text/html",
-            "htm" => "text/html",
-            "exe" => "application/octet-stream",
-            "zip" => "application/zip",
-            "doc" => "application/msword",
-            "xls" => "application/vnd.ms-excel",
-            "ppt" => "application/vnd.ms-powerpoint",
-            "gif" => "image/gif",
-            "png" => "image/png",
-            "jpeg" => "image/jpg",
-            "jpg" => "image/jpg",
-            "php" => "text/plain"
-        );
-
-        
-        $file_extension = strtolower(substr(strrchr($filename, "."), 1));
-        if (array_key_exists($file_extension, $known_mime_types)) {
-            $mime_type = $known_mime_types[$file_extension];
-        } else {
-            $mime_type = "application/force-download";
-        }
-        
-        return array('extension' => $file_extension, 'mime' => $mime_type);
-    }
-    
     public function doUploadAction(Request $request, StaticFilesService $staticFilesService)
     {
       $folder = $request->request->get('folder');
@@ -125,7 +95,7 @@ class MediaWyswygController extends AbstractController
       }
       else
       {
-          $mimeAndName = $this->retrieveExtensionAndMiMeType($fileUploaded->getClientOriginalName());
+          $mimeAndName = $staticFilesService->retrieveExtensionAndMiMeType($fileUploaded->getClientOriginalName());
           $name = uniqid(). '.'.$mimeAndName['extension'];
       }
       $movedFile = $fileUploaded->move($targetDir, $name);
@@ -145,7 +115,7 @@ class MediaWyswygController extends AbstractController
       $fileObject = $staticFilesService->getFile($folder, $file);
       $content = $fileObject-> getContents();
       $response = new Response();
-      $fileMetadata = $this->retrieveExtensionAndMiMeType($fileObject->getFilename());
+      $fileMetadata = $staticFilesService->retrieveExtensionAndMiMeType($fileObject->getFilename());
       $response->headers->set('Content-Type', $fileMetadata['mime']);
       $response->headers->set('Content-Disposition', 'attachment;filename="'.$fileObject->getFilename());
       $response->setContent($content);
@@ -162,7 +132,16 @@ class MediaWyswygController extends AbstractController
       return $response;
     }
 
-    public function showFileAction(Request $request, StaticFilesService $staticFilesService, ImageUrlGeneratorService $imageUrlGeneratorService, $folder, $file)
+    /**
+     * @param Request $request
+     * @param StaticFilesService $staticFilesService
+     * @param ImageUrlGeneratorService $imageUrlGeneratorService
+     * @param StaticFileUrlGeneratorService $staticFileUrlGeneratorService
+     * @param $folder
+     * @param $file
+     * @return JsonResponse
+     */
+    public function showFileAction(Request $request, StaticFilesService $staticFilesService, ImageUrlGeneratorService $imageUrlGeneratorService, StaticFileUrlGeneratorService $staticFileUrlGeneratorService, $folder, $file)
     {
       $fileObject =  $staticFilesService->getFile($folder, $file);
       $choices = [
@@ -171,6 +150,7 @@ class MediaWyswygController extends AbstractController
         'Respetar el ancho' => 'rce',
         'Hacer un resize maximo con los parametros dados' => 'mpr',
         'Hacer un resize centrado' => 'rcce',
+        'Link para descargar' => 'link',
         'Original' => '', 
       ];
       $form = $this->createFormBuilder()
@@ -191,7 +171,11 @@ class MediaWyswygController extends AbstractController
           // data is an array with "name", "email", and "message" keys
           $data = $form->getData();
           $close = true;
-          $url = $imageUrlGeneratorService->mImageFilter($fileObject->getPathName(), $data['width'], $data['heigth'], $data['tipo'], false, true);
+          if ($data['tipo'] === 'link') {
+              $url = $staticFileUrlGeneratorService->createLink($folder, $file);
+          } else {
+              $url = $imageUrlGeneratorService->mImageFilter($fileObject->getPathName(), $data['width'], $data['heigth'], $data['tipo'], false, true);
+          }
       } else {
         $html = $this->renderView('@MaithCommonAdmin/Wyswyg/_useFileForm.html.twig', array(
                   'form' => $form->createView(),
